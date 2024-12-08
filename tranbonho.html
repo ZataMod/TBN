@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tràn Bộ Nhớ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #fff;
+            position: absolute;
+            top: 20px;
+        }
+
+        /* Nút bấm */
+        .btn-spam {
+            padding: 10px 20px;
+            font-size: 18px;
+            background: #ff6f91;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-spam:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Popup tràn bộ nhớ */
+        .popup {
+            width: 250px;
+            background: #fff;
+            border: 2px solid #ff6f91;
+            border-radius: 10px;
+            box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            z-index: 1000;
+            font-size: 14px;
+        }
+
+        .popup-header {
+            background: #ff6f91;
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-header span {
+            font-weight: bold;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .popup-content {
+            padding: 10px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn-spam" onclick="startSpamming()">Bấm Vào Đi</button>
+    <audio id="backgroundMusic" src="tbn.mp3" loop></audio>
+
+    <script>
+        let intervalId = null;
+        let timeoutId = null;
+        const audio = document.getElementById('backgroundMusic');
+
+        function createPopup() {
+            // Tạo popup
+            const popup = document.createElement("div");
+            popup.classList.add("popup");
+
+            // Header của popup
+            popup.innerHTML = `
+                <div class="popup-header">
+                    <span>Thông Báo</span>
+                    <span class="close-btn" onclick="this.parentElement.parentElement.remove()">×</span>
+                </div>
+                <div class="popup-content">
+                    <p>Tràn Bộ Nhớ Vì Nhớ Em</p>
+                </div>
+            `;
+
+            // Random vị trí trên màn hình
+            const x = Math.random() * (window.innerWidth - 250);
+            const y = Math.random() * (window.innerHeight - 100);
+            popup.style.left = `${x}px`;
+            popup.style.top = `${y}px`;
+
+            // Thêm popup vào body
+            document.body.appendChild(popup);
+        }
+
+        function startSpamming() {
+            // Dừng spam nếu đã chạy
+            if (intervalId !== null) return;
+
+            // Phát nhạc
+            audio.play();
+
+            // Bắt đầu spam popup mỗi 0.3 giây
+            intervalId = setInterval(createPopup, 300);
+
+            // Dừng sau 16 giây và reset
+            timeoutId = setTimeout(() => {
+                clearInterval(intervalId);
+                intervalId = null;
+                audio.pause();
+                audio.currentTime = 0;
+            }, 16000);
+        }
+    </script>
+</body>
+</html>
